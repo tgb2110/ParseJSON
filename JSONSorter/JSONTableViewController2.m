@@ -27,6 +27,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    NSLog(@"Class of passed in thing: %@", [self.parsedJSON class]);
+    
+    if ([self.parsedJSON isKindOfClass:[NSArray class]])
+    {
+        NSLog(@"It's an array!");
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -56,15 +63,15 @@
     
     // Configure the cell...
     
-    cell.textLabel.text = [self.allKeys[indexPath.row] description];
-    
-    NSString *keyValue = cell.textLabel.text;
-    
-    id object = [self.parsedJSON objectForKey:keyValue];
-    
-    NSString *className = [[object class] description];
-    
-    cell.detailTextLabel.text = className;
+//    cell.textLabel.text = [self.allKeys[indexPath.row] description];
+//    
+//    NSString *keyValue = cell.textLabel.text;
+//    
+//   // id object = [self.parsedJSON objectForKey:keyValue];
+//    
+//    NSString *className = [[object class] description];
+//    
+//    cell.detailTextLabel.text = className;
     
     return cell;
 }

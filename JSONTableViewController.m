@@ -24,10 +24,8 @@
     return self;
 }
 
-- (void)viewDidLoad
+- (void)parseJSON
 {
-    [super viewDidLoad];
-    
     NSError *error = nil;
     NSString* path = [[NSBundle mainBundle] pathForResource:@"jsondata" ofType:@"txt"];
     NSString* jsonContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
@@ -38,7 +36,21 @@
     [NSJSONSerialization JSONObjectWithData: jsonData
                                     options: NSJSONReadingMutableContainers
                                       error: nil];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     
+    
+//    NSMutableDictionary *myDictionary = [NSMutableDictionary new];
+    
+//    NSMutableArray *arrayKey =[NSMutableArray arrayWithArray:@[@"this is my element"]];
+//    myDictionary[arrayKey] = @"It Worked!";
+//    
+//    NSLog(@"My Class is: %@", [arrayKey.class description]);
+//    NSLog(@"Retreive: %@", [myDictionary[arrayKey] description]);
+    [self parseJSON];
     self.allKeys = [self.parsedJSON allKeys];
 }
 
@@ -68,16 +80,22 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"basicCell" forIndexPath:indexPath];
     
     // Configure the cell...
+    id key = self.allKeys[indexPath.row];
+    cell.textLabel.text = [key description];
     
-    cell.textLabel.text = [self.allKeys[indexPath.row] description];
-    
-    NSString *keyValue = cell.textLabel.text;
-    
-    id object = [self.parsedJSON objectForKey:keyValue];
-    
-    NSString *className = [[object class] description];
-    
+    NSString *className = [[self.parsedJSON[key] class] description];
     cell.detailTextLabel.text = className;
+    
+    
+    
+    
+//    NSString *keyValue = cell.textLabel.text;
+//    
+//    id object = [self.parsedJSON objectForKey:keyValue];
+//    
+//    NSString *className = [[object class] description];
+    
+
     
     return cell;
 }
@@ -128,11 +146,14 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     JSONTableViewController2 *nextVC = segue.destinationViewController;
-    UITableViewCell *cell = sender;
-    NSString *key = cell.textLabel.text;
-    NSDictionary *nextLevel= [self.parsedJSON objectForKey:key];
-    nextVC.allKeys = [nextLevel allKeys];
-    nextVC.parsedJSON = nextLevel;
+    NSIndexPath *ip = [self.tableView indexPathForSelectedRow];
+    
+    
+//    UITableViewCell *cell = sender;
+//    NSString *key = cell.textLabel.text;
+//    NSDictionary *nextLevel= [self.parsedJSON objectForKey:key];
+//    nextVC.allKeys = [nextLevel allKeys];
+//    nextVC.parsedJSON = nextLevel;
 }
 
 @end

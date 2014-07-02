@@ -10,7 +10,7 @@
 
 @interface JSONTableViewController2 : UITableViewController
 
-@property (strong, nonatomic) NSDictionary *parsedJSON;
+@property (strong, nonatomic) id parsedJSON;
 @property (strong, nonatomic) NSArray *allKeys;
 
 @end
