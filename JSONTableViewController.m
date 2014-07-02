@@ -7,7 +7,7 @@
 //
 
 #import "JSONTableViewController.h"
-#import "JSONTableViewController2.h"
+#import "BasicCell.h"
 
 @interface JSONTableViewController ()
 
@@ -32,7 +32,7 @@
     
     NSData *jsonData = [jsonContents dataUsingEncoding:NSUTF8StringEncoding];
     
-    self.parsedJSON =
+    self.layerData =
     [NSJSONSerialization JSONObjectWithData: jsonData
                                     options: NSJSONReadingMutableContainers
                                       error: nil];
@@ -50,8 +50,22 @@
 //    
 //    NSLog(@"My Class is: %@", [arrayKey.class description]);
 //    NSLog(@"Retreive: %@", [myDictionary[arrayKey] description]);
+    if ([self.navigationController.viewControllers count] < 2)
+    {
     [self parseJSON];
-    self.allKeys = [self.parsedJSON allKeys];
+    
+    }
+    
+    if ([self.layerData isKindOfClass:[NSDictionary class]])
+    {
+        self.allKeys = [(NSDictionary *)self.layerData allKeys];
+    }
+    else if ([self.layerData isKindOfClass:[NSArray class]])
+    {
+        self.allKeys = self.layerData;
+    }
+    
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -77,27 +91,74 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"basicCell" forIndexPath:indexPath];
+    static NSString *reuseIdentifier = @"cell";
+    BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     
-    // Configure the cell...
+    if (!cell)
+    {
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BasicCell" owner:self options:nil];
+        cell = [nib objectAtIndex:0];
+    }
+    
     id key = self.allKeys[indexPath.row];
-    cell.textLabel.text = [key description];
     
-    NSString *className = [[self.parsedJSON[key] class] description];
-    cell.detailTextLabel.text = className;
-    
-    
-    
-    
-//    NSString *keyValue = cell.textLabel.text;
-//    
-//    id object = [self.parsedJSON objectForKey:keyValue];
-//    
-//    NSString *className = [[object class] description];
-    
+    cell.keyLabel.text = [key description];
+    cell.dataTypeLabel.text = [[self.layerData[key] class] description];
 
-    
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    BasicCell *cell = (BasicCell *)[tableView cellForRowAtIndexPath:indexPath];
+    
+    NSString *key = cell.keyLabel.text;
+    
+    if ([self.layerData isKindOfClass:[NSDictionary class]])
+    {
+        if ([self.layerData objectForKey:key])
+        {
+            if ([[self.layerData objectForKey:key] isKindOfClass:[NSDictionary class]])
+            {
+                NSDictionary *nextLevel= [self.layerData objectForKey:key];
+                
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
+                
+                JSONTableViewController *JSON_TVC = [storyboard instantiateViewControllerWithIdentifier:@"JSON_TVC"];
+                
+                JSON_TVC.layerData = nextLevel;
+                //        JSON_TVC.allKeys = [nextLevel allKeys];
+                
+                [self.navigationController pushViewController:JSON_TVC animated:YES];
+            }
+            
+            if ([[self.layerData objectForKey:key] isKindOfClass:[NSArray class]])
+            {
+                NSArray *nextLevel= [self.layerData objectForKey:key];
+                
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
+                
+                JSONTableViewController *JSON_TVC = [storyboard instantiateViewControllerWithIdentifier:@"JSON_TVC"];
+                
+                JSON_TVC.layerData = nextLevel;
+                
+                [self.navigationController pushViewController:JSON_TVC animated:YES];
+            }
+
+        }
+    }
+    else if ([self.layerData isKindOfClass:[NSArray class]])
+    {
+        if ([[self.layerData objectForKey:key] isKindOfClass:[NSArray class]])
+        {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
+            
+            JSONTableViewController *JSON_TVC = [storyboard instantiateViewControllerWithIdentifier:@"JSON_TVC"];
+            
+            [self.navigationController pushViewController:JSON_TVC animated:YES];
+        }
+        
+    }
 }
 
 
@@ -141,19 +202,11 @@
 
 
 #pragma mark - Navigation
-
+/*
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    JSONTableViewController2 *nextVC = segue.destinationViewController;
-    NSIndexPath *ip = [self.tableView indexPathForSelectedRow];
-    
-    
-//    UITableViewCell *cell = sender;
-//    NSString *key = cell.textLabel.text;
-//    NSDictionary *nextLevel= [self.parsedJSON objectForKey:key];
-//    nextVC.allKeys = [nextLevel allKeys];
-//    nextVC.parsedJSON = nextLevel;
-}
 
+}
+*/
 @end
