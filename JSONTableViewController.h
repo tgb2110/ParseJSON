@@ -12,5 +12,6 @@
 
 @property (strong, nonatomic) id layerData;
 @property (strong, nonatomic) NSArray *allKeys;
+@property (strong, nonatomic) NSArray *allValues;
 
 @end
