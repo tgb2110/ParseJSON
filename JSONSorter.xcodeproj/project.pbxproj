@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		313589991964477A005B3605 /* BasicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 313589971964477A005B3605 /* BasicCell.m */; };
 		3135899A1964477A005B3605 /* BasicCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 313589981964477A005B3605 /* BasicCell.xib */; };
+		3B5AAE9819673BFA00C9F862 /* SendDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5AAE9619673BFA00C9F862 /* SendDataViewController.m */; };
+		3B5AAE9B1967409100C9F862 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B5AAE9A1967409100C9F862 /* MessageUI.framework */; };
 		F3B675D0195FA7D5007F1A22 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B675CF195FA7D5007F1A22 /* Foundation.framework */; };
 		F3B675D2195FA7D5007F1A22 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B675D1195FA7D5007F1A22 /* CoreGraphics.framework */; };
 		F3B675D4195FA7D5007F1A22 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B675D3195FA7D5007F1A22 /* UIKit.framework */; };
@@ -40,6 +42,9 @@
 		313589961964477A005B3605 /* BasicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicCell.h; sourceTree = "<group>"; };
 		313589971964477A005B3605 /* BasicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BasicCell.m; sourceTree = "<group>"; };
 		313589981964477A005B3605 /* BasicCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BasicCell.xib; sourceTree = "<group>"; };
+		3B5AAE9519673BFA00C9F862 /* SendDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SendDataViewController.h; path = ../SendDataViewController.h; sourceTree = "<group>"; };
+		3B5AAE9619673BFA00C9F862 /* SendDataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SendDataViewController.m; path = ../SendDataViewController.m; sourceTree = "<group>"; };
+		3B5AAE9A1967409100C9F862 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		F3B675CC195FA7D5007F1A22 /* JSONSorter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JSONSorter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3B675CF195FA7D5007F1A22 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F3B675D1195FA7D5007F1A22 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -67,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B5AAE9B1967409100C9F862 /* MessageUI.framework in Frameworks */,
 				F3B675D2195FA7D5007F1A22 /* CoreGraphics.framework in Frameworks */,
 				F3B675D4195FA7D5007F1A22 /* UIKit.framework in Frameworks */,
 				F3B675D0195FA7D5007F1A22 /* Foundation.framework in Frameworks */,
@@ -86,6 +92,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B5AAE9C1967409D00C9F862 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3B5AAE9519673BFA00C9F862 /* SendDataViewController.h */,
+				3B5AAE9619673BFA00C9F862 /* SendDataViewController.m */,
+				F3B67604195FAA33007F1A22 /* JSONTableViewController.h */,
+				F3B67605195FAA33007F1A22 /* JSONTableViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		3B5AAE9D196740BD00C9F862 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				313589981964477A005B3605 /* BasicCell.xib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		3B5AAE9F196740D800C9F862 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				313589961964477A005B3605 /* BasicCell.h */,
+				313589971964477A005B3605 /* BasicCell.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		F3B675C3195FA7D5007F1A22 = {
 			isa = PBXGroup;
 			children = (
@@ -108,6 +142,7 @@
 		F3B675CE195FA7D5007F1A22 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3B5AAE9A1967409100C9F862 /* MessageUI.framework */,
 				F3B675CF195FA7D5007F1A22 /* Foundation.framework */,
 				F3B675D1195FA7D5007F1A22 /* CoreGraphics.framework */,
 				F3B675D3195FA7D5007F1A22 /* UIKit.framework */,
@@ -122,11 +157,9 @@
 				F3B675DE195FA7D5007F1A22 /* AppDelegate.h */,
 				F3B675DF195FA7D5007F1A22 /* AppDelegate.m */,
 				F3B67602195FAA12007F1A22 /* Storyboard.storyboard */,
-				313589961964477A005B3605 /* BasicCell.h */,
-				313589971964477A005B3605 /* BasicCell.m */,
-				313589981964477A005B3605 /* BasicCell.xib */,
-				F3B67604195FAA33007F1A22 /* JSONTableViewController.h */,
-				F3B67605195FAA33007F1A22 /* JSONTableViewController.m */,
+				3B5AAE9C1967409D00C9F862 /* Controllers */,
+				3B5AAE9F196740D800C9F862 /* Models */,
+				3B5AAE9D196740BD00C9F862 /* Views */,
 				F3B675E1195FA7D5007F1A22 /* Images.xcassets */,
 				F3B67601195FA963007F1A22 /* Resources */,
 				F3B675D6195FA7D5007F1A22 /* Supporting Files */,
@@ -274,6 +307,7 @@
 			files = (
 				313589991964477A005B3605 /* BasicCell.m in Sources */,
 				F3B67606195FAA33007F1A22 /* JSONTableViewController.m in Sources */,
+				3B5AAE9819673BFA00C9F862 /* SendDataViewController.m in Sources */,
 				F3B675E0195FA7D5007F1A22 /* AppDelegate.m in Sources */,
 				F3B675DC195FA7D5007F1A22 /* main.m in Sources */,
 			);

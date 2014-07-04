@@ -8,6 +8,7 @@
 
 #import "JSONTableViewController.h"
 #import "BasicCell.h"
+#import "SendDataViewController.h"
 
 @interface JSONTableViewController ()
 
@@ -83,6 +84,9 @@
     
     NSLog(@"\n\nSelected Key: @[%@] \nDataType : @[%@]\n", keyForSelectedIndexPath, dataType);
     
+    self.title = keyForSelectedIndexPath;
+    // ^ easiest place to ensure we grab what the user sees fro final path printout
+    
     if ([self.layerData isKindOfClass:[NSDictionary class]])
     {
         [self buildNextLevelFromDictionary:keyForSelectedIndexPath];
@@ -109,10 +113,13 @@
     [NSJSONSerialization JSONObjectWithData: jsonData
                                     options: NSJSONReadingMutableContainers
                                       error: nil];
+    self.title = @"Initial JSON";
+    // ^ needed for final path printout
 }
 
 - (void)parseDataSourceIntoArrays
 {
+    
     if ([self.navigationController.viewControllers count] < 2)
     {
         [self parseJSON];
@@ -217,4 +224,6 @@
 
 }
 */
+
+
 @end
