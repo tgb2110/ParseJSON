@@ -29,7 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self parseLayerDataIntoArrays];
+    [self parseDataSourceIntoArrays];
 }
 
 - (void)didReceiveMemoryWarning
@@ -59,7 +59,7 @@
     if (!cell)
     {
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BasicCell" owner:self options:nil];
-        cell = [nib objectAtIndex:0]; // cool, this is how we use custom cells; LEARNING!
+        cell = [nib objectAtIndex:0]; // custom cell
     }
     
     id key = self.allKeys[indexPath.row];
@@ -67,9 +67,10 @@
     cell.keyLabel.text = [key description];
     
     NSString *dataType = [NSString stringWithFormat:@"%@", [self.allValues[indexPath.row] class]];
-    // ^ creates string of data type from allValues array
+    // ^ pulls class from index path for data type display
     
     cell.dataTypeLabel.text = dataType;
+    
     return cell;
 }
 
@@ -77,21 +78,20 @@
 {
     BasicCell *cell = (BasicCell *)[tableView cellForRowAtIndexPath:indexPath];
     
-    NSString *key = cell.keyLabel.text;
+    NSString *keyForSelectedIndexPath = cell.keyLabel.text;
     NSString *dataType = cell.dataTypeLabel.text;
     
-    NSLog(@" Selected Key: %@ of DataType : %@", key, dataType);
+    NSLog(@"\n\nSelected Key: @[%@] \nDataType : @[%@]\n", keyForSelectedIndexPath, dataType);
     
     if ([self.layerData isKindOfClass:[NSDictionary class]])
     {
-        [self buildNextLevelFromDictionary:key];
+        [self buildNextLevelFromDictionary:keyForSelectedIndexPath];
     }
     
     else if ([self.layerData isKindOfClass:[NSArray class]])
     {
         [self buildNextLevelFromArray:indexPath];
     }
-    
 }
 
 #pragma mark - Parsing Methods
@@ -111,7 +111,7 @@
                                       error: nil];
 }
 
-- (void)parseLayerDataIntoArrays
+- (void)parseDataSourceIntoArrays
 {
     if ([self.navigationController.viewControllers count] < 2)
     {
@@ -122,7 +122,7 @@
     {
         self.allKeys = [(NSDictionary *)self.layerData allKeys];
         self.allValues = [(NSDictionary *)self.layerData allValues];
-        // ^ will be used for data type text field during cell population
+        // ^ used for data type text field during cell population
     }
     else if ([self.layerData isKindOfClass:[NSArray class]])
     {
@@ -139,40 +139,28 @@
 {
     if ([[self.layerData objectForKey:key] isKindOfClass:[NSDictionary class]])
     {
-        [self nextLevelFromDictionaryIsDictionaryClass:key];
+        NSDictionary *nextLevel= [self.layerData objectForKey:key];
+        [self buildFinalNextLevel:nextLevel];
     }
     
     else if ([[self.layerData objectForKey:key] isKindOfClass:[NSArray class]])
     {
-        [self nextLevelFromDictionaryIsArrayClass:key];
+        NSArray *nextLevel= [self.layerData objectForKey:key];
+        [self buildFinalNextLevel:nextLevel];
     }
-}
-
-- (void)nextLevelFromDictionaryIsDictionaryClass:(NSString *)key
-{
-    NSDictionary *nextLevel= [self.layerData objectForKey:key];
-    
-    [self buildFinalNextLevel:nextLevel];
-}
-
-- (void)nextLevelFromDictionaryIsArrayClass:(NSString *)key
-{
-    NSArray *nextLevel= [self.layerData objectForKey:key];
-    
-    [self buildFinalNextLevel:nextLevel];
 }
 
 #pragma mark From Selected Array
 - (void)buildNextLevelFromArray:(NSIndexPath *)indexPath
 {
     NSArray *nextLevel= self.layerData[indexPath.row];
-    
     [self buildFinalNextLevel:nextLevel];
 }
 
 #pragma mark
 - (void)buildFinalNextLevel:(id)nextLevel
-{
+{  // ^ used generic (id)nextLevel to allow same method for both incoming dictionary and array
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
     
     JSONTableViewController *JSON_TVC = [storyboard instantiateViewControllerWithIdentifier:@"JSON_TVC"];
