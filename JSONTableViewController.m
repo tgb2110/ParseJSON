@@ -24,10 +24,11 @@
     return self;
 }
 
+#pragma mark - UIViewController
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
     [self parseLayerDataIntoArrays];
 }
 
@@ -37,7 +38,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -72,7 +73,6 @@
     return cell;
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     BasicCell *cell = (BasicCell *)[tableView cellForRowAtIndexPath:indexPath];
@@ -89,25 +89,17 @@
     
     else if ([self.layerData isKindOfClass:[NSArray class]])
     {
-        NSArray *nextLevel= self.layerData[indexPath.row];
-        
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
-        
-        JSONTableViewController *JSON_TVC = [storyboard instantiateViewControllerWithIdentifier:@"JSON_TVC"];
-        
-        JSON_TVC.layerData = nextLevel;
-        
-        [self.navigationController pushViewController:JSON_TVC animated:YES];
-        }
-        
+        [self buildNextLevelFromArray:indexPath];
     }
+    
+}
 
 #pragma mark - Parsing Methods
 
 - (void)parseJSON
-// ^ parses local JSON txt file into useable JSON dictionary
 {
     NSError *error = nil;
+    
     NSString* path = [[NSBundle mainBundle] pathForResource:@"jsondata" ofType:@"txt"];
     NSString* jsonContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
     
@@ -130,50 +122,57 @@
     {
         self.allKeys = [(NSDictionary *)self.layerData allKeys];
         self.allValues = [(NSDictionary *)self.layerData allValues];
-        // ^ will be used for detail text field of data type during cell population
+        // ^ will be used for data type text field during cell population
     }
     else if ([self.layerData isKindOfClass:[NSArray class]])
-    { // ^ executes if layerData is type array on load
+    {
         self.allKeys = self.layerData;
         self.allValues = self.layerData;
         // ^ by setting equal removed need to descern between dictionary or array during cell population
     }
 }
 
-#pragma mark
 #pragma mark - Build Next Level of JSON
 
-#pragma mark - From Dictionary
+#pragma mark From Selected Dictionary
 - (void)buildNextLevelFromDictionary:(NSString *)key
 {
     if ([[self.layerData objectForKey:key] isKindOfClass:[NSDictionary class]])
     {
-        [self nextLevelIsDictionaryClass:key];
+        [self nextLevelFromDictionaryIsDictionaryClass:key];
     }
     
     else if ([[self.layerData objectForKey:key] isKindOfClass:[NSArray class]])
     {
-        [self nextLevelIsArrayClass:key];
+        [self nextLevelFromDictionaryIsArrayClass:key];
     }
 }
 
-- (void)nextLevelIsDictionaryClass:(NSString *)key
+- (void)nextLevelFromDictionaryIsDictionaryClass:(NSString *)key
 {
     NSDictionary *nextLevel= [self.layerData objectForKey:key];
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
-    
-    JSONTableViewController *JSON_TVC = [storyboard instantiateViewControllerWithIdentifier:@"JSON_TVC"];
-    
-    JSON_TVC.layerData = nextLevel;
-    
-    [self.navigationController pushViewController:JSON_TVC animated:YES];
+    [self buildFinalNextLevel:nextLevel];
 }
 
-- (void)nextLevelIsArrayClass:(NSString *)key
+- (void)nextLevelFromDictionaryIsArrayClass:(NSString *)key
 {
     NSArray *nextLevel= [self.layerData objectForKey:key];
     
+    [self buildFinalNextLevel:nextLevel];
+}
+
+#pragma mark From Selected Array
+- (void)buildNextLevelFromArray:(NSIndexPath *)indexPath
+{
+    NSArray *nextLevel= self.layerData[indexPath.row];
+    
+    [self buildFinalNextLevel:nextLevel];
+}
+
+#pragma mark
+- (void)buildFinalNextLevel:(id)nextLevel
+{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
     
     JSONTableViewController *JSON_TVC = [storyboard instantiateViewControllerWithIdentifier:@"JSON_TVC"];
@@ -183,8 +182,7 @@
     [self.navigationController pushViewController:JSON_TVC animated:YES];
 }
 
-
-#pragma mark - Supplied Methods
+#pragma mark - Boilerplate (unused)
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -222,7 +220,6 @@
     return YES;
 }
 */
-
 
 #pragma mark - Navigation
 /*
