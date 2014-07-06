@@ -8,26 +8,27 @@
 
 #import <UIKit/UIKit.h>
 
+@class Source;
+@class JSN_DataManager;
 @interface JSONTableViewController : UITableViewController
 
+#pragma mark - Properties
 @property (strong, nonatomic) id layerData;
 @property (strong, nonatomic) NSArray *allKeys;
 @property (strong, nonatomic) NSArray *allValues;
+@property (strong, nonatomic) JSN_DataManager *dataManager;
+@property (strong, nonatomic) Source *source;
 
+#pragma mark - Methods
+#pragma mark Parsing
 
-#pragma mark - Parsing Methods
 - (void)parseJSON;
 - (void)parseDataSourceIntoArrays;
 
-#pragma mark - Build Next Level of JSON
+#pragma mark BuildNextLevelOfJSON
 
-#pragma mark From Selected Dictionary
 - (void)buildNextLevelFromDictionary:(NSString *)key;
-
-#pragma mark From Selected Array
 - (void)buildNextLevelFromArray:(NSIndexPath *)indexPath;
-
-#pragma mark
 - (void)buildFinalNextLevel:(id)nextLevel;
 
 @end

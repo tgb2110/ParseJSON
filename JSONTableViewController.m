@@ -8,12 +8,16 @@
 
 #import "JSONTableViewController.h"
 #import "BasicCell.h"
+#import "JSN_DataManager.h"
+#import "Source.h"
 
 @interface JSONTableViewController ()
 
 @end
 
 @implementation JSONTableViewController
+
+#pragma mark - View Controller Lifecycle
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -24,12 +28,20 @@
     return self;
 }
 
-#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self parseDataSourceIntoArrays];
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+
+    [super viewDidAppear:animated];
+    
+    [self prepareDataSource];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,28 +108,68 @@
 
 #pragma mark - Parsing Methods
 
-- (void)parseJSON
-{
-    NSError *error = nil;
-    
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"jsondata" ofType:@"txt"];
-    NSString* jsonContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
-    
-    NSData *jsonData = [jsonContents dataUsingEncoding:NSUTF8StringEncoding];
-    
-    self.layerData =
-    [NSJSONSerialization JSONObjectWithData: jsonData
-                                    options: NSJSONReadingMutableContainers
-                                      error: nil];
-}
+//- (void)parseJSON
+//{
+//    dispatch_queue_t downloadQueue = dispatch_queue_create("Get our data", NULL);
+//    
+//    dispatch_async(downloadQueue, ^{
+//        
+//        
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            
+//            self.layerData = [NSJSONSerialization
+//                              JSONObjectWithData:self.datamanager.responseData
+//                              
+//                              options:kNilOptions
+//                              error:&error];
+//        });
+//    });
+//
+//    [self downloadJSON];
+//    
+//     NSError *error = nil;
+//    
+//    NSString* path = [[NSBundle mainBundle] pathForResource:@"jsondata" ofType:@"txt"];
+//    NSString* jsonContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+//    
+//    NSData *jsonData = [jsonContents dataUsingEncoding:NSUTF8StringEncoding];
+//    
+//    self.layerData =
+//    [NSJSONSerialization JSONObjectWithData: jsonData
+//                                    options: NSJSONReadingMutableContainers
+//                                      error: nil];
+//}
 
-- (void)parseDataSourceIntoArrays
+- (void)prepareDataSource
 {
-    if ([self.navigationController.viewControllers count] < 2)
+    if ([self.navigationController.viewControllers count] < 3)
     {
-        [self parseJSON];
+        
+            self.dataManager = [JSN_DataManager sharedDataManager];
+            
+            [self.dataManager fetchJSONData:self.source.urlAddress withCompletionBlock:^(NSMutableData *responseData, NSError *error) {
+                
+                self.layerData = [NSJSONSerialization JSONObjectWithData:self.dataManager.responseData options: NSJSONReadingMutableContainers error: nil];
+                
+                [self parseLayerDataIntoArrays];
+                
+            }];
     }
     
+    else
+    {
+        [self parseLayerDataIntoArrays];
+    }
+}
+
+-(void)downloadJSON
+{
+    
+}
+
+- (void)parseLayerDataIntoArrays
+{
     if ([self.layerData isKindOfClass:[NSDictionary class]])
     {
         self.allKeys = [(NSDictionary *)self.layerData allKeys];
@@ -130,6 +182,8 @@
         self.allValues = self.layerData;
         // ^ by setting equal removed need to descern between dictionary or array during cell population
     }
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark - Build Next Level of JSON
