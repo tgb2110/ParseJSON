@@ -107,40 +107,6 @@
 }
 
 #pragma mark - Parsing Methods
-
-//- (void)parseJSON
-//{
-//    dispatch_queue_t downloadQueue = dispatch_queue_create("Get our data", NULL);
-//    
-//    dispatch_async(downloadQueue, ^{
-//        
-//        
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            
-//            self.layerData = [NSJSONSerialization
-//                              JSONObjectWithData:self.datamanager.responseData
-//                              
-//                              options:kNilOptions
-//                              error:&error];
-//        });
-//    });
-//
-//    [self downloadJSON];
-//    
-//     NSError *error = nil;
-//    
-//    NSString* path = [[NSBundle mainBundle] pathForResource:@"jsondata" ofType:@"txt"];
-//    NSString* jsonContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
-//    
-//    NSData *jsonData = [jsonContents dataUsingEncoding:NSUTF8StringEncoding];
-//    
-//    self.layerData =
-//    [NSJSONSerialization JSONObjectWithData: jsonData
-//                                    options: NSJSONReadingMutableContainers
-//                                      error: nil];
-//}
-
 - (void)prepareDataSource
 {
     if ([self.navigationController.viewControllers count] < 3)
@@ -153,7 +119,6 @@
                 self.layerData = [NSJSONSerialization JSONObjectWithData:self.dataManager.responseData options: NSJSONReadingMutableContainers error: nil];
                 
                 [self parseLayerDataIntoArrays];
-                
             }];
     }
     
@@ -161,11 +126,6 @@
     {
         [self parseLayerDataIntoArrays];
     }
-}
-
--(void)downloadJSON
-{
-    
 }
 
 - (void)parseLayerDataIntoArrays

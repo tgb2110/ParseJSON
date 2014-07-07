@@ -11,8 +11,7 @@
 @interface JSN_SourceTVC : UITableViewController <NSFetchedResultsControllerDelegate>
 
 #pragma mark - Properties
-@property (strong, nonatomic) NSArray *sources;
 @property (strong, nonatomic) JSN_DataManager *dataManager;
-@property (strong, nonatomic) NSFetchedResultsController *resultsController;
+@property (strong, nonatomic) NSArray *sources;
 
 @end

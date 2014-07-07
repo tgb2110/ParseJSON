@@ -10,14 +10,13 @@
 
 typedef void(^CompletionBlock)(NSMutableData *responseData, NSError *error);
 
-
 @interface JSN_DataManager : NSObject <NSURLConnectionDelegate>
 
 #pragma mark - Properties
 @property (strong, nonatomic) NSMutableData *responseData;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (strong, nonatomic) NSArray *sources;
-
+@property (strong, nonatomic) NSFetchedResultsController *resultsController;
+@property (strong, nonatomic) CompletionBlock completionBlock;
 #pragma mark - ClassMethods
 + (instancetype)sharedDataManager;
 

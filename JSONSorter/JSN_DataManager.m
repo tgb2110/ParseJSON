@@ -39,6 +39,7 @@
     // ^ Creates a request with the URL passed in
     
     NSURLConnection *connection =[[NSURLConnection alloc] initWithRequest:request delegate:self];
+
     // ^ Sets up a connection using the request
     
     dispatch_queue_t queue = dispatch_queue_create("dataDownloader",NULL);
@@ -141,20 +142,30 @@
     [self fetchSourceData];
 }
 
+-(NSFetchedResultsController *)resultsController
+{
+    if (!_resultsController)
+    {
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Source"];
+        NSSortDescriptor *alphabeticalSort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+        fetchRequest.sortDescriptors = @[alphabeticalSort];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        
+        [_resultsController performFetch:nil];
+        
+    }
+    return _resultsController;
+}
+
 - (void)fetchSourceData
 {
-    NSFetchRequest *sourcesRequest = [NSFetchRequest fetchRequestWithEntityName:@"Source"];
+    [self.resultsController performFetch:nil];
     
-//    NSSortDescriptor *createdAtSorter = [NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES];
-//    sourcesRequest.sortDescriptors = @[createdAtSorter];
-    
-    self.sources = [self.managedObjectContext executeFetchRequest:sourcesRequest error:nil];
-    
-    if ([self.sources count]==0) {
+    if ([self.resultsController.fetchedObjects count]==0) {
         [self generateTestData];
     }
 }
-
 - (void)saveContext
 {
     NSError *error = nil;
@@ -176,5 +187,6 @@
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
+
 
 @end

@@ -33,23 +33,29 @@
     
     self.dataManager = [JSN_DataManager sharedDataManager];
     
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Source"];
-    NSSortDescriptor *alphabeticalSort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    fetchRequest.sortDescriptors = @[alphabeticalSort];
+    self.dataManager.resultsController.delegate = self;
+
+//    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Source"];
+//    NSSortDescriptor *alphabeticalSort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+//    fetchRequest.sortDescriptors = @[alphabeticalSort];
+//    
+//    self.resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.dataManager.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+//    self.resultsController.delegate = self;
+//    [self.resultsController performFetch:nil];
     
-    self.resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.dataManager.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    self.resultsController.delegate = self;
-    [self.resultsController performFetch:nil];
     
-    self.sources = [[NSArray alloc] initWithArray:self.resultsController.fetchedObjects];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
+    self.dataManager.resultsController = nil;
+    self.dataManager.resultsController.delegate = self;
     [self.dataManager fetchSourceData];
 
+    self.sources = self.dataManager.resultsController.fetchedObjects;
+    
     [self.tableView reloadData];
     
 }
@@ -71,7 +77,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [self.resultsController.fetchedObjects count];
+    return [self.sources count];
 }
 
 
@@ -79,11 +85,16 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sourceCell" forIndexPath:indexPath];
     
-    Source *source = self.resultsController.fetchedObjects[indexPath.row];
-    
-    cell.textLabel.text = source.name;
+    [self configureCell:cell atIndexPath:indexPath];
     
     return cell;
+}
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    Source *source = self.sources[indexPath.row];
+    
+    cell.textLabel.text = source.name;
 }
 
 #pragma mark - UITableViewDelegate
@@ -142,6 +153,67 @@
         jsonTVC.source = source;
     }
 
+}
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView beginUpdates];
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+    
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    UITableView *tableView = self.tableView;
+    
+    switch(type) {
+            
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath]
+                    atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView endUpdates];
 }
 
 
