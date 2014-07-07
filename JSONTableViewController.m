@@ -85,7 +85,7 @@
     NSLog(@"\n\nSelected Key: @[%@] \nDataType : @[%@]\n", keyForSelectedIndexPath, dataType);
     
     self.title = keyForSelectedIndexPath;
-    // ^ easiest place to ensure we grab what the user sees fro final path printout
+    // ^ easiest place to ensure we grab what the user sees for final path printout
     
     if ([self.layerData isKindOfClass:[NSDictionary class]])
     {

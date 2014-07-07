@@ -127,7 +127,7 @@
 #pragma mark - Message
 
 - (void)buildMessage
-{// goes through all view controllers are adds title property to message string
+{// goes through all view controllers and adds title property to message string
     self.title = @"Final controller";
     
     self.message = [[NSMutableString alloc] initWithString:@"JSON PATH (via stacked View Controllers) \n\n"];
