@@ -4,6 +4,40 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
+        <!--SourceTVC - JSON source-->
+        <scene sceneID="uum-WF-8FJ">
+            <objects>
+                <tableViewController id="PbO-gK-PGH" customClass="JSN_SourceTVC" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="tqi-jc-N2Q">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="sourceCell" id="1Ec-Wk-CGY">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Ec-Wk-CGY" id="0yt-nc-e3t">
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="jkw-u7-Hxl" kind="push" identifier="jsonSegue" id="gtl-5q-DAc"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="PbO-gK-PGH" id="UZB-Nw-b8j"/>
+                            <outlet property="delegate" destination="PbO-gK-PGH" id="Rap-Lz-rRC"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="JSON source" id="Pjb-RJ-2yT">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="d8k-bl-LOd"/>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NsY-Rw-UvB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="665" y="196"/>
+        </scene>
         <!--Table View Controller-->
         <scene sceneID="8Yf-oS-62x">
             <objects>
@@ -31,7 +65,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h9e-vD-rDW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="674" y="196"/>
+            <point key="canvasLocation" x="1042" y="187"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vrk-XX-htw">
@@ -44,7 +78,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="jkw-u7-Hxl" kind="relationship" relationship="rootViewController" id="1eT-RR-K6B"/>
+                        <segue destination="PbO-gK-PGH" kind="relationship" relationship="rootViewController" id="IhO-Zk-9cS"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kOR-Po-GIp" userLabel="First Responder" sceneMemberID="firstResponder"/>
