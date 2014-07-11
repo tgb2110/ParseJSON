@@ -61,11 +61,60 @@
                             <outlet property="delegate" destination="jkw-u7-Hxl" id="cYR-9w-RIA"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="lut-Gi-dzm"/>
+                    <navigationItem key="navigationItem" id="lut-Gi-dzm">
+                        <barButtonItem key="rightBarButtonItem" systemItem="compose" id="VCu-El-aZg">
+                            <connections>
+                                <segue destination="jrB-V6-Mny" kind="push" id="ZiM-ef-6R2"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h9e-vD-rDW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1042" y="187"/>
+        </scene>
+        <!--Send Data View Controller-->
+        <scene sceneID="H3E-w3-te3">
+            <objects>
+                <viewController id="jrB-V6-Mny" customClass="SendDataViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1eM-j1-l7m"/>
+                        <viewControllerLayoutGuide type="bottom" id="WXl-5g-3DD"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="s2W-Tg-2Mn">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aMB-ib-iWO">
+                                <rect key="frame" x="20" y="189" width="280" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="45"/>
+                                <state key="normal" title="Email">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="email:" destination="jrB-V6-Mny" eventType="touchUpInside" id="rwl-Qh-7nf"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sEs-ZG-saI">
+                                <rect key="frame" x="20" y="285" width="280" height="74"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="45"/>
+                                <state key="normal" title="Text">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="text:" destination="jrB-V6-Mny" eventType="touchUpInside" id="E8H-rE-qD5"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="kfd-vK-KFb"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nPU-Mu-LgZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1093" y="195"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vrk-XX-htw">

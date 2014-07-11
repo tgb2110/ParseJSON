@@ -10,6 +10,8 @@
 #import "BasicCell.h"
 #import "JSN_DataManager.h"
 #import "Source.h"
+#import "SendDataViewController.h"
+
 
 @interface JSONTableViewController ()
 
@@ -95,6 +97,9 @@
     
     NSLog(@"\n\nSelected Key: @[%@] \nDataType : @[%@]\n", keyForSelectedIndexPath, dataType);
     
+    self.title = keyForSelectedIndexPath;
+    // ^ easiest place to ensure we grab what the user sees for final path printout
+    
     if ([self.layerData isKindOfClass:[NSDictionary class]])
     {
         [self buildNextLevelFromDictionary:keyForSelectedIndexPath];
@@ -126,6 +131,10 @@
     {
         [self parseLayerDataIntoArrays];
     }
+
+    self.title = @"Initial JSON";
+    // ^ needed for final path printout
+
 }
 
 - (void)parseLayerDataIntoArrays
@@ -231,4 +240,6 @@
 
 }
 */
+
+
 @end
