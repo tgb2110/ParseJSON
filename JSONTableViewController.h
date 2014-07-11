@@ -22,8 +22,7 @@
 #pragma mark - Methods
 #pragma mark Parsing
 
-- (void)parseJSON;
-- (void)parseDataSourceIntoArrays;
+- (void)parseLayerDataIntoArrays;
 
 #pragma mark BuildNextLevelOfJSON
 

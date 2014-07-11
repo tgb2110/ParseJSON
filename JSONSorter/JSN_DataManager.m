@@ -42,6 +42,9 @@
 
     // ^ Sets up a connection using the request
     
+    //[connection start];
+
+    
     dispatch_queue_t queue = dispatch_queue_create("dataDownloader",NULL);
     dispatch_async(queue, ^{
         [self waitForResponse];
@@ -137,6 +140,21 @@
     
     sourceOne.name = @"Stack Overflow";
     sourceOne.urlAddress = @"http://api.stackexchange.com/2.2/questions/?site=stackoverflow";
+    
+    
+    Source *sourceTwo = [NSEntityDescription insertNewObjectForEntityForName:@"Source" inManagedObjectContext:self.managedObjectContext];
+    
+    
+    sourceTwo.name = @"Google Books";
+    sourceTwo.urlAddress = @"https://www.googleapis.com/books/v1/volumes?q=isbn:0747532699";
+    
+    Source *sourceThree = [NSEntityDescription insertNewObjectForEntityForName:@"Source" inManagedObjectContext:self.managedObjectContext];
+    
+    
+    sourceThree.name = @"footballdata.org";
+    sourceThree.urlAddress = @"http://www.football-data.org/soccerseason/3/ranking";
+    
+    http://www.football-data.org/soccerseason/3/ranking
     
     [self saveContext];
     [self fetchSourceData];

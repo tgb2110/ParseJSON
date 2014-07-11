@@ -142,9 +142,10 @@
         
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         
-        Source *source = self.sources[indexPath.row];
+        Source *source = self.dataManager.resultsController.fetchedObjects[indexPath.row];
         
         jsonTVC.source = source;
+        jsonTVC.title = @"Top Level";
     }
 
 }
