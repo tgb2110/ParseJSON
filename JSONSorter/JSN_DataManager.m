@@ -11,7 +11,7 @@
 
 @interface JSN_DataManager ()
 
-@property (nonatomic, strong) CompletionBlock completionBlock;
+//@property (nonatomic, strong) CompletionBlock completionBlock;
 @property (nonatomic) BOOL finished;
 
 @end
@@ -160,8 +160,6 @@
 
 - (void)fetchSourceData
 {
-    [self.resultsController performFetch:nil];
-    
     if ([self.resultsController.fetchedObjects count]==0) {
         [self generateTestData];
     }

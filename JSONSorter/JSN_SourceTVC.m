@@ -49,14 +49,8 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    self.dataManager.resultsController = nil;
-    self.dataManager.resultsController.delegate = self;
-    [self.dataManager fetchSourceData];
 
-    self.sources = self.dataManager.resultsController.fetchedObjects;
-    
-    [self.tableView reloadData];
+    [self.dataManager fetchSourceData];
     
 }
 
@@ -77,7 +71,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [self.sources count];
+    return [self.dataManager.resultsController.fetchedObjects count];
 }
 
 
@@ -92,7 +86,7 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
-    Source *source = self.sources[indexPath.row];
+    Source *source = self.dataManager.resultsController.fetchedObjects[indexPath.row];
     
     cell.textLabel.text = source.name;
 }
