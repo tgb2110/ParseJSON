@@ -31,12 +31,20 @@
 {
     [super viewDidLoad];
     [self parseDataSourceIntoArrays];
+    [self setUINavigationButtons];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)setUINavigationButtons
+{
+    UIBarButtonItem *btnEmail = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(sendJSONPathViaEmail)];
+    UIBarButtonItem *btnMessage = [[UIBarButtonItem alloc] initWithTitle:@"SMS" style:0 target:self action:@selector(sendJSONPathViaMessage)];
+    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:btnEmail, btnMessage, nil]];
 }
 
 #pragma mark - UITableViewDelegate
@@ -164,7 +172,6 @@
     [self buildFinalNextLevel:nextLevel];
 }
 
-#pragma mark
 - (void)buildFinalNextLevel:(id)nextLevel
 {  // ^ used generic (id)nextLevel to allow same method for both incoming dictionary and array
     
@@ -175,6 +182,101 @@
     JSON_TVC.layerData = nextLevel;
     
     [self.navigationController pushViewController:JSON_TVC animated:YES];
+}
+#pragma mark - Build Final JSON Path
+
+- (void)buildMessage
+{// goes through all view controllers and adds title property to message string
+    self.title = @"Final controller";
+    
+    self.message = [[NSMutableString alloc] initWithString:@"JSON PATH (via stacked View Controllers) \n\n"];
+    
+    NSArray *controllerArray = [[self navigationController] viewControllers];
+    
+    for (UIViewController *controller in controllerArray) {
+        [self.message appendString:[NSString stringWithFormat:@"@[%@]\n", controller.title]];
+        
+        // ^ need to find a way around the "{" dictionary
+        // messes with the print out and pretty sure skips an entire dictionary
+    }
+}
+
+#pragma mark - Send JSON path via
+
+#pragma mark Email
+
+-(void)sendJSONPathViaEmail {
+
+    [self buildMessage];
+    MFMailComposeViewController *emailView = [[MFMailComposeViewController alloc]init];
+    
+    emailView.mailComposeDelegate = self;
+    [emailView setMessageBody:self.message isHTML:NO];
+    
+    [self presentViewController:emailView animated:YES completion:nil];
+}
+// handles operations from mail client and dismisses modal back to app
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    
+    switch (result)
+    {
+        case MFMailComposeResultCancelled:
+            NSLog(@"Mail cancelled");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"Mail saved");
+            break;
+        case MFMailComposeResultSent:
+            NSLog(@"Mail sent");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
+            break;
+        default:
+            break;
+    }
+    
+    // Close the Mail Interface
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark SMS
+
+- (void)sendJSONPathViaMessage {
+    
+    [self buildMessage];
+    
+    if (![MFMessageComposeViewController canSendText]) {
+        // ^ apparently this comes back as a boolean saying if texting is available wont run without it
+        UIAlertView *warningAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Your device does not support SMS!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [warningAlert show];
+        return;
+    }
+    
+    MFMessageComposeViewController *messageView = [[MFMessageComposeViewController alloc]init];
+    
+    messageView.messageComposeDelegate = self;
+    
+    [messageView setBody:self.message];
+    
+    [self presentViewController:messageView animated:YES completion:nil];
+}
+// handles operations from text message and dismisses modal back to app
+-(void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    
+    switch (result)
+    {
+        case MessageComposeResultCancelled:
+            NSLog(@"Mail cancelled");
+            break;
+        case MessageComposeResultSent:
+            NSLog(@"Mail sent");
+            break;
+        default:
+            break;
+    }
+    // Close the Message Interface
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Boilerplate (unused)
