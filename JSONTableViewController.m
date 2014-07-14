@@ -132,7 +132,7 @@
     }
     else if ([cell.dataTypeLabel.text isEqualToString:@"__NSArrayM" ])
     {
-        [self.pathToJSON appendString:[NSString stringWithFormat:@"%@[#]",cell.keyLabel.text]];
+        [self.pathToJSON appendString:[NSString stringWithFormat:@"[@\"%@\"][#]",cell.keyLabel.text]];
     } else {
         [self.pathToJSON appendString:[NSString stringWithFormat:@"[@\"%@\"]",cell.keyLabel.text]];
     }
@@ -159,6 +159,8 @@
         [self.dataManager fetchJSONData:self.source.urlAddress withCompletionBlock:^(NSMutableData *responseData, NSError *error) {
             
             self.layerData = [NSJSONSerialization JSONObjectWithData:self.dataManager.responseData options: NSJSONReadingMutableContainers error: nil];
+            
+            NSLog(@"%@", self.layerData);
             
             [self parseLayerDataIntoArrays];
         }];
