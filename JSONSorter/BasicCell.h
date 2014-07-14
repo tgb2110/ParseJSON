@@ -13,6 +13,6 @@
 #pragma mark - Properties
 @property (strong, nonatomic) IBOutlet UILabel *keyLabel;
 @property (strong, nonatomic) IBOutlet UILabel *dataTypeLabel;
-@property (strong, nonatomic) IBOutlet UILabel *dataLabel;
+@property (strong, nonatomic) IBOutlet UILabel *dataPrintOut;
 
 @end

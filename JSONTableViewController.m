@@ -42,11 +42,15 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-
-    [super viewDidAppear:animated];
     
+    [super viewDidAppear:animated];
     [self prepareDataSource];
+    
+}
 
+-(void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -80,15 +84,31 @@
     }
     
     id key = self.allKeys[indexPath.row];
-
-    cell.keyLabel.text = [key description];
     
+    cell.keyLabel.text = [key description];
+    NSLog(@"Keylabel: %@",cell.keyLabel.text);
+    
+    if ([[cell.keyLabel.text substringToIndex:1] isEqualToString:@"{"])
+    {
+        cell.keyLabel.text = [NSString stringWithFormat:@"%@ %d", [self.title substringToIndex:[self.title length] -1 ], indexPath.row+1];
+    }
     NSString *dataType = [NSString stringWithFormat:@"%@", [self.allValues[indexPath.row] class]];
     // ^ pulls class from index path for data type display
     
+    cell.dataPrintOut.text = [self displayDataPrintOutForKeyLabel:cell.keyLabel.text atIndexPath:(NSIndexPath *)indexPath];
+    
     cell.dataTypeLabel.text = dataType;
-    //cell.dataLabel.text =
     return cell;
+}
+
+
+-(NSMutableString *)pathToJSON
+{
+    if (!_pathToJSON)
+    {
+        _pathToJSON = [[NSMutableString alloc] init];
+    }
+    return _pathToJSON;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -102,6 +122,20 @@
     
     //self.title = self.keyForSelectedIndexPath;
     // ^ easiest place to ensure we grab what the user sees for final path printout
+    
+    if ([cell.dataTypeLabel.text isEqualToString:@"__NSDictionaryM"])
+    {
+        NSString *dictionaryKeyString = [(NSString *)[self.allKeys[indexPath.row] description] substringToIndex:1];
+        if (![dictionaryKeyString isEqualToString:@"{"]){
+            [self.pathToJSON appendString:[NSString stringWithFormat:@"[@\"%@\"]", cell.keyLabel.text]];
+        }
+    }
+    else if ([cell.dataTypeLabel.text isEqualToString:@"__NSArrayM" ])
+    {
+        [self.pathToJSON appendString:[NSString stringWithFormat:@"%@[#]",cell.keyLabel.text]];
+    } else {
+        [self.pathToJSON appendString:[NSString stringWithFormat:@"[@\"%@\"]",cell.keyLabel.text]];
+    }
     
     if ([self.layerData isKindOfClass:[NSDictionary class]])
     {
@@ -120,21 +154,21 @@
     if ([self.navigationController.viewControllers count] < 3)
     {
         
-            self.dataManager = [JSN_DataManager sharedDataManager];
+        self.dataManager = [JSN_DataManager sharedDataManager];
+        
+        [self.dataManager fetchJSONData:self.source.urlAddress withCompletionBlock:^(NSMutableData *responseData, NSError *error) {
             
-            [self.dataManager fetchJSONData:self.source.urlAddress withCompletionBlock:^(NSMutableData *responseData, NSError *error) {
-                
-                self.layerData = [NSJSONSerialization JSONObjectWithData:self.dataManager.responseData options: NSJSONReadingMutableContainers error: nil];
-                
-                [self parseLayerDataIntoArrays];
-            }];
+            self.layerData = [NSJSONSerialization JSONObjectWithData:self.dataManager.responseData options: NSJSONReadingMutableContainers error: nil];
+            
+            [self parseLayerDataIntoArrays];
+        }];
     }
     
     else
     {
         [self parseLayerDataIntoArrays];
     }
-
+    
 }
 
 - (void)parseLayerDataIntoArrays
@@ -149,6 +183,7 @@
     {
         self.allKeys = self.layerData;
         self.allValues = self.layerData;
+        
         // ^ by setting equal removed need to descern between dictionary or array during cell population
     }
     
@@ -190,56 +225,23 @@
     
     JSON_TVC.layerData = nextLevel;
     JSON_TVC.title = self.keyForSelectedIndexPath;
+    JSON_TVC.pathToJSON = self.pathToJSON;
     [self.navigationController pushViewController:JSON_TVC animated:YES];
 }
 
-#pragma mark - Boilerplate (unused)
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+-(NSString *)displayDataPrintOutForKeyLabel:(NSString *)keyLabelText atIndexPath:(NSIndexPath *)indexPath {
+    NSString *dataPrintOut;
+    if ([self.allValues[indexPath.row] isKindOfClass:[NSArray class]]) {
+        dataPrintOut = [NSString stringWithFormat:@"List of %@",keyLabelText];
+    } else if ([self.allValues[indexPath.row] isKindOfClass:[NSDictionary class]]) {
+        dataPrintOut = [NSString stringWithFormat:@"Attributes of %@",keyLabelText];
+    } else if ([self.allValues[indexPath.row] isKindOfClass:[NSString class]]) {
+        dataPrintOut = [NSString stringWithFormat:@"%@", self.allValues[indexPath.row]];
+    } else {
+        dataPrintOut = [NSString stringWithFormat:@"%@", self.allValues[indexPath.row]];
+    }
+    return dataPrintOut;
 }
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-#pragma mark - Navigation
-/*
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-
-}
-*/
 
 #pragma mark - Distribution
 - (void)setUINavigationButtons
@@ -252,30 +254,8 @@
 #pragma mark - Build Final JSON Path
 
 - (void)buildMessage
-{// goes through all view controllers and adds title property to message string
-    self.title = @"Final controller";
-    
-    self.message = [[NSMutableString alloc] initWithString:@"JSON PATH (via stacked View Controllers) \n\n"];
-    
-    NSArray *controllerArray = [[self navigationController] viewControllers];
-    
-    for (NSInteger controllerNumber = 0; controllerNumber < [controllerArray count]; controllerNumber++)
-    {
-        if (controllerNumber > 1)
-        {
-            UIViewController *controller = controllerArray[controllerNumber];
-            
-            NSMutableString *layerTitle = [[NSString stringWithFormat:@"@[%@]\n", controller.title] mutableCopy];
-            
-            if (![[layerTitle substringToIndex:3] isEqualToString:@"@[{"])
-            {
-                [self.message appendString:layerTitle];
-            }
-            
-            // ^ need to find a way around the "{" dictionary
-            // messes with the print out and pretty sure skips an entire dictionary
-        }
-    }
+{
+    self.message = self.pathToJSON;
 }
 
 #pragma mark - Send JSON path via

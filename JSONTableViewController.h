@@ -16,6 +16,7 @@
 @property (strong, nonatomic) id layerData;
 @property (strong, nonatomic) NSArray *allKeys;
 @property (strong, nonatomic) NSArray *allValues;
+@property (strong, nonatomic) NSMutableString *pathToJSON;
 @property (strong, nonatomic) JSN_DataManager *dataManager;
 @property (strong, nonatomic) Source *source;
 
@@ -26,7 +27,7 @@
 
 #pragma mark BuildNextLevelOfJSON
 
-- (void)buildNextLevelFromDictionary:(NSString *)key;
+//- (void)buildNextLevelFromDictionary:(NSString *)key;
 - (void)buildNextLevelFromArray:(NSIndexPath *)indexPath;
 - (void)buildFinalNextLevel:(id)nextLevel;
 

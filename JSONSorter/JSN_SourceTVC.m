@@ -145,7 +145,6 @@
         Source *source = self.dataManager.resultsController.fetchedObjects[indexPath.row];
         
         jsonTVC.source = source;
-        jsonTVC.title = @"Top Level";
     }
 
 }
